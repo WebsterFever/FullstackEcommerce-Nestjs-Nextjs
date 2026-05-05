@@ -99,3 +99,6 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 create guard 
 npx nest g gu auth/auth --flat --no-spec
+
+add typeorm 
+npm i @nestjs/typeorm typeorm @nestjs/config pg
