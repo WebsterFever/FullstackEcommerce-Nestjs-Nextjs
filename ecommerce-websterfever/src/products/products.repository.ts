@@ -56,8 +56,12 @@ export class ProductsRepository {
     },
   ];
 
-  getAllProducts(): Product[] {
-    return this.products;
+  getAllProducts(page: number, limit: number): Product[] {
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const productPage = this.products.slice(startIndex, endIndex);
+
+    return productPage;
   }
 
   getProductById(id: number) {
