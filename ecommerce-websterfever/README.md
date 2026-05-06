@@ -102,3 +102,9 @@ npx nest g gu auth/auth --flat --no-spec
 
 add typeorm 
 npm i @nestjs/typeorm typeorm @nestjs/config pg
+module categori
+npx nest g mo categories/categories --flat --no-spec
+controlador
+npx nest g co categories/categories --flat --no-spec
+service
+npx nest g s categories/categories --flat --no-spec

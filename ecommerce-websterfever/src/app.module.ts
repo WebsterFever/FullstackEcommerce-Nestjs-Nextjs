@@ -15,6 +15,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import typeorm from './config/typeorm';
 import { DataSourceOptions } from 'typeorm';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { DataSourceOptions } from 'typeorm';
     UsersModule,
     ProductsModule,
     AuthModule,
+    CategoriesModule,
   ],
 
   controllers: [AppController],
