@@ -1,109 +1,88 @@
 import { Injectable } from '@nestjs/common';
-import { Product } from './products.interface';
+import { Product } from '../entities/product.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Category } from '../entities/category.entity';
+import data from '../utils/data.json';
 
 @Injectable()
 export class ProductsRepository {
-  private products = [
-    {
-      id: 1,
-      name: 'iPhone 15',
-      description: 'The best smartphone in the world',
-      price: 199.99,
-      stock: true,
-      category: 'smartphone',
-      imgUrl:
-        'https://st4.depositphotos.com/14953852/22772/v/450/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg',
-    },
-    {
-      id: 2,
-      name: 'Samsung Galaxy S23',
-      description: 'The best smartphone in the world',
-      price: 150.0,
-      stock: true,
-      category: 'smartphone',
-      imgUrl:
-        'https://st4.depositphotos.com/14953852/22772/v/450/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg',
-    },
-    {
-      id: 3,
-      name: 'Motorola Edge 40',
-      description: 'The best smartphone in the world',
-      price: 179.89,
-      stock: true,
-      category: 'smartphone',
-      imgUrl:
-        'https://st4.depositphotos.com/14953852/22772/v/450/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg',
-    },
-    {
-      id: 4,
-      name: 'Samsung Odyssey G9',
-      description: 'The best monitor in the world',
-      price: 299.99,
-      stock: false,
-      category: 'monitor',
-      imgUrl:
-        'https://st4.depositphotos.com/14953852/22772/v/450/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg',
-    },
-    {
-      id: 5,
-      name: 'LG UltraGear',
-      description: 'The best monitor in the world',
-      price: 199.99,
-      stock: true,
-      category: 'monitor',
-      imgUrl:
-        'https://st4.depositphotos.com/14953852/22772/v/450/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg',
-    },
-  ];
+  constructor(
+    @InjectRepository(Product)
+    private productsRepository: Repository<Product>,
 
-  getAllProducts(page: number, limit: number): Product[] {
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const productPage = this.products.slice(startIndex, endIndex);
+    @InjectRepository(Category)
+    private categoriesRepository: Repository<Category>,
+  ) {}
 
-    return productPage;
+  async getProducts(page: number, limit: number): Promise<Product[]> {
+    let products = await this.productsRepository.find({
+      relations: {
+        category: true,
+      },
+    });
+
+    const start = (page - 1) * limit;
+    const end = start + limit;
+    products = products.slice(start, end);
+
+    return products;
   }
 
-  getProductById(id: number) {
-    const product = this.products.find((prod) => prod.id === +id);
+  async getProduct(id: string): Promise<Product | string> {
+    const product = await this.productsRepository.findOneBy({ id });
 
-    if (!product) return 'Product not found';
+    if (!product) {
+      return `Producto con id ${id} no encontrado`;
+    }
 
     return product;
   }
 
-  createProduct(newProduct) {
-    const id = this.products.length + 1;
+  async addProducts(): Promise<string> {
+    const categories = await this.categoriesRepository.find();
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const product = { id, ...newProduct };
+    await Promise.all(
+      data?.map(async (element) => {
+        const category = categories.find(
+          (category) => category.name === element.category,
+        );
 
-    this.products.push(product);
-    //why not return product?
-    return id;
+        if (!category) return 'Category not found';
+
+        const product = new Product();
+        product.name = element.name;
+        product.description = element.description;
+        product.price = element.price;
+        // product.imgUrl = element.imgUrl;
+        product.stock = element.stock;
+        product.category = category;
+
+        await this.productsRepository
+          .createQueryBuilder()
+          .insert()
+          .into(Product)
+          .values(product)
+          .orUpdate(['description', 'price', 'imgUrl', 'stock'], ['name'])
+          .execute();
+      }) ?? [],
+    );
+    return 'Products added successfully';
   }
 
-  updateProduct(id: number, productUpdated: Product) {
-    const product = this.products.find((prod) => prod.id === +id);
-
-    if (!product) return 'Product not found';
-
-    this.products = this.products.map((prod) =>
-      prod.id === id ? { ...prod, ...productUpdated } : prod,
-    );
-
-    const updatedProduct = this.products.find((prod) => prod.id === id);
-
+  async updateProduct(id: string, product: Product) {
+    await this.productsRepository.update(id, product);
+    const updatedProduct = await this.productsRepository.findOneBy({ id });
     return updatedProduct;
   }
 
-  deleteProduct(id: number) {
-    const product = this.products.find((prod) => prod.id === +id);
+  async deleteProduct(id: string): Promise<string> {
+    const product = await this.productsRepository.findOneBy({ id });
 
-    if (!product) return 'Product not found';
+    if (!product) return 'Product is not found';
 
-    this.products = this.products.filter((prod) => prod.id !== +id);
+    await this.productsRepository.remove(product);
 
-    return product;
+    return 'Product is removed successfully';
   }
 }
