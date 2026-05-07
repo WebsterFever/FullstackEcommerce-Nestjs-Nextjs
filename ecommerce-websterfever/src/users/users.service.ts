@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
-import { User } from './users.interface';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -13,18 +11,18 @@ export class UsersService {
   }
 
   getUserByIdService(id: string) {
-    return this.usersRepository.getUserById(Number(id));
+    return this.usersRepository.getUserById(id);
   }
 
-  createUserService(user: User) {
+  createUserService(user: Partial<User>) {
     return this.usersRepository.createUser(user);
   }
 
-  updateUserService(id: string, user: User) {
-    return this.usersRepository.updateUser(Number(id), user);
+  updateUserService(id: string, user: Partial<User>) {
+    return this.usersRepository.updateUser(id, user);
   }
 
   deleteUserService(id: string) {
-    return this.usersRepository.deleteUser(Number(id));
+    return this.usersRepository.deleteUser(id);
   }
 }

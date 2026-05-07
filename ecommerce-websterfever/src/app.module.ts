@@ -16,6 +16,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import typeorm from './config/typeorm';
 import { DataSourceOptions } from 'typeorm';
 import { CategoriesModule } from './categories/categories.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { CategoriesModule } from './categories/categories.module';
     ProductsModule,
     AuthModule,
     CategoriesModule,
+    OrdersModule,
   ],
 
   controllers: [AppController],

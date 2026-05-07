@@ -8,14 +8,14 @@ export class AuthService {
     return 'This action returns the authentication status';
   }
 
-  signIn(email: string, password: string) {
+  async signIn(email: string, password: string) {
     // Aquí puedes implementar la lógica de autenticación, como verificar el correo electrónico y la contraseña
     // contra una base de datos o un servicio de autenticación externo.
     // Por ahora, simplemente devolveremos un mensaje de éxito.
     if (!email || !password) {
       return 'Email and password are required!';
     }
-    const user = this.usersRepository.getUserByEmail(email);
+    const user = await this.usersRepository.getUserByEmail(email);
     if (!user || user.password !== password) {
       return 'Invalid credentials!';
     }

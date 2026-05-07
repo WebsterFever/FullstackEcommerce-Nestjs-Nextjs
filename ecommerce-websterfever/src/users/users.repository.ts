@@ -1,98 +1,78 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Injectable } from '@nestjs/common';
-import { User } from './users.interface';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UsersRepository {
-  private users = [
-    {
-      id: 1,
-      email: 'pepi@mail.com',
-      name: 'Pepito',
-      password: 'pepi123',
-      address: 'calle 1234',
-      phone: '115783654',
-      country: 'Argentina',
-      city: 'Buenos Aires',
-    },
-    {
-      id: 2,
-      email: 'pepa@mail.com',
-      name: 'Pepita',
-      password: 'pepa123',
-      address: 'calle 4567',
-      phone: '2234786589',
-    },
-    {
-      id: 3,
-      email: 'mindy@mail.com',
-      name: 'Mimis',
-      password: 'pass123',
-      address: 'calle 2345',
-      phone: '5745783654',
-      country: 'Colombia',
-      city: 'Medellín',
-    },
-  ];
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
 
-  getUsers(page: number, limit: number): Partial<User>[] {
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const userPage = this.users.slice(startIndex, endIndex);
-    // const users = this.users.map(
-    //   ({ password, ...usersWithoutPassword }) => usersWithoutPassword,
-    // );
-    // return users;
+  async getUsers(page: number, limit: number): Promise<Partial<User>[]> {
+    const skip = (page - 1) * limit;
 
-    return userPage.map(
-      ({ password, ...usersWithoutPassword }) => usersWithoutPassword,
-    );
+    const users = await this.usersRepository.find({
+      take: limit, // take y limit son parte de las opciones en Typeorm para paginación
+      skip: skip,
+    });
+
+    return users.map(({ password, ...userNoPassword }) => userNoPassword);
   }
 
-  getUserById(id: number) {
-    const user = this.users.find((user) => user.id === id);
+  async getUserById(id: string): Promise<Partial<User> | string> {
+    const user = await this.usersRepository.findOne({
+      where: { id },
+      relations: {
+        orders: true,
+      },
+    });
 
-    if (!user) return undefined;
+    if (!user) return `No se encontró el usuario con id ${id}`;
 
-    const { password, ...userWithoutPassword } = user;
+    const { password, ...userNoPassword } = user;
 
-    return userWithoutPassword;
+    return userNoPassword;
   }
 
-  getUserByEmail(email: string) {
-    const user = this.users.find((user) => user.email === email);
-    return user;
+  async getUserByEmail(email: string): Promise<User | null> {
+    return await this.usersRepository.findOneBy({ email });
   }
 
-  createUser(user) {
-    const id = this.users.length + 1;
-    this.users.push({ id, ...user });
+  async createUser(user: Partial<User>): Promise<Partial<User>> {
+    const newUser = await this.usersRepository.save(user);
+    const { password, ...userNoPassword } = newUser;
 
-    return user;
+    return userNoPassword;
   }
 
-  updateUser(id: number, userUpdated) {
-    const userFound = this.users.find((user) => user.id === id);
+  async updateUser(id: string, user: Partial<User>): Promise<Partial<User>> {
+    await this.usersRepository.update(id, user);
 
-    if (!userFound) return 'User not found';
+    const updatedUser = await this.usersRepository.findOneBy({ id });
+    //const updatedUser = await this.getUserById(id) as Promise<User>;
 
-    const updatedUser = { ...userFound, ...userUpdated };
-    const { password, ...userWithoutPassword } = updatedUser;
-    this.users.map((user) => (user.id === +id ? userWithoutPassword : user));
+    if (!updatedUser)
+      throw new NotFoundException(`Usuario con id ${id} no encontrado`);
 
-    return userWithoutPassword;
+    const { password, ...userNoPassword } = updatedUser;
+
+    return userNoPassword;
   }
 
-  deleteUser(id: number) {
-    const user = this.users.find((user) => user.id === id);
+  async deleteUser(id: string): Promise<Partial<User>> {
+    const user = await this.usersRepository.findOneBy({ id });
 
-    if (!user) return 'User not found';
+    // const user = await this.getUserById(id);
 
-    this.users = this.users.filter((user) => user.id !== id);
+    if (!user)
+      throw new NotFoundException(`Usuario con id ${id} no encontrado`);
 
-    const { password, ...userWithoutPassword } = user;
+    await this.usersRepository.remove(user);
 
-    return userWithoutPassword;
+    const { password, ...userNoPassword } = user;
+
+    return userNoPassword;
   }
 }
