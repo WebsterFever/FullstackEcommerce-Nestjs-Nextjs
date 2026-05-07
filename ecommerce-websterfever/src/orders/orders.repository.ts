@@ -23,15 +23,10 @@ export class OrdersRepository {
     @InjectRepository(Product)
     private productsRepository: Repository<Product>,
   ) {}
-
   async getOrder(id: string) {
     const order = await this.ordersRepository.findOne({
       where: { id },
-      relations: {
-        orderDetail: {
-          products: true,
-        },
-      },
+      relations: ['orderDetail', 'orderDetail.products', 'user'],
     });
 
     if (!order) {

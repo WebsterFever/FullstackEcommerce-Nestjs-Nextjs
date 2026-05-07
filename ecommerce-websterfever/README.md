@@ -108,3 +108,5 @@ controlador
 npx nest g co categories/categories --flat --no-spec
 service
 npx nest g s categories/categories --flat --no-spec
+migracion
+npm run migration:create ./src/migrations/Migration

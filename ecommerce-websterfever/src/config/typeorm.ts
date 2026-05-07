@@ -23,7 +23,7 @@ const config: DataSourceOptions = {
   // autoLoadEntities: true,
 
   // ⚠️ dangerous → only for testing
-  // dropSchema: true,
+  dropSchema: true,
 };
 
 export default registerAs('typeorm', () => config);
