@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { OrdersRepository } from './orders.repository';
+import { Product } from '../entities/product.entity';
+import { ProductDto } from './dto/order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -9,7 +11,7 @@ export class OrdersService {
     return this.ordersRepository.getOrder(id);
   }
 
-  addOrder(userId: string, products: any) {
+  addOrder(userId: string, products: ProductDto[]) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return this.ordersRepository.addOrder(userId, products);
   }

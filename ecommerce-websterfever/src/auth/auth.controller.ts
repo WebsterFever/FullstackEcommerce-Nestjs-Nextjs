@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { LoginUserDto } from '../users/dto/user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -12,9 +11,13 @@ export class AuthController {
     return this.authService.getAuthStatus();
   }
 
-  @Post('SignIn')
-  signIn(@Body() credentials: any) {
+  @Post('signin')
+  signIn(@Body() credentials: LoginUserDto) {
     const { email, password } = credentials;
+
+    if (!email) return 'Invalid Credentials';
+    if (!password) return 'Invalid Credentials';
+
     return this.authService.signIn(email, password);
   }
 }

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import {
   Body,
   Controller,
@@ -16,6 +14,7 @@ import {
 import { UsersService } from './users.service';
 import { User } from './users.interface';
 import { AuthGuard } from '../auth/auth.guard';
+import { CreateUserDto } from './dto/user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -38,13 +37,13 @@ export class UsersController {
   }
 
   @Post()
-  createUser(@Body() user) {
+  createUser(@Body() user: CreateUserDto) {
     return this.usersService.createUserService(user);
   }
 
   @Put(':id')
   @UseGuards(AuthGuard)
-  updateUser(@Param('id') id: string, @Body() user) {
+  updateUser(@Param('id') id: string, @Body() user: CreateUserDto) {
     return this.usersService.updateUserService(id, user);
   }
 

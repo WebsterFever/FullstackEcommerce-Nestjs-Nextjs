@@ -10,6 +10,7 @@ import { Product } from '../entities/product.entity';
 import { Order } from '../entities/order.entity';
 import { OrderDetail } from '../entities/orderDetails.entity';
 import { User } from '../entities/user.entity';
+import { ProductDto } from './dto/order.dto';
 
 @Injectable()
 export class OrdersRepository {
@@ -30,49 +31,70 @@ export class OrdersRepository {
     });
 
     if (!order) {
-      return `Orden con id ${id} no encontrada`;
+      throw new NotFoundException({
+        message: `Order with id ${id} not found`,
+        error: 'Not Found',
+        statusCode: 404,
+      });
     }
 
-    return order;
+    return {
+      message: 'Order found successfully',
+      data: order,
+    };
   }
 
-  async addOrder(userId: string, products: Product[]) {
+  async addOrder(userId: string, products: ProductDto[]) {
     let total = 0;
 
-    // 1.Verificamos que exista el Usuario:
+    // 1. Verificamos que exista el Usuario
     const user = await this.usersRepository.findOneBy({ id: userId });
 
     if (!user) {
-      return `Usuario con id ${userId} no encontrado`;
-      //throw new NotFoundException(`Usuario con id ${userId} no encontrado`);
+      throw new NotFoundException({
+        message: `Usuario con id ${userId} no encontrado`,
+        error: 'User Not Found',
+        statusCode: 404,
+      });
     }
 
-    // 2. Creamos la Orden:
+    // 2. Creamos la Orden
     const order = new Order();
     order.date = new Date();
     order.user = user;
 
-    // 3. Creamos la orden en la DB
+    // 3. Guardamos la Orden en la DB
     const newOrder = await this.ordersRepository.save(order);
 
-    // Asociamos cada "id" recibido con el "Producto"
+    // 4. Asociamos Productos
     const productsArray = await Promise.all(
       products.map(async (element) => {
         const product = await this.productsRepository.findOneBy({
           id: element.id,
         });
 
+        // Verificamos si existe el producto
         if (!product) {
-          // return `Producto con id ${element.id} no encontrado`;
-          throw new NotFoundException(
-            `Producto con id ${element.id} no encontrado`,
-          );
+          throw new NotFoundException({
+            message: `Producto con id ${element.id} no encontrado`,
+            error: 'Product Not Found',
+            statusCode: 404,
+          });
         }
 
-        /* Calculamos el Monto total: */
+        // Verificamos stock disponible
+        if (product.stock <= 0) {
+          throw new BadRequestException({
+            message: `Producto ${product.name} sin stock disponible`,
+            error: 'Out Of Stock',
+            statusCode: 400,
+          });
+        }
+
+        // Calculamos total
         total += Number(product.price);
 
-        /* Actualizamos el "Stock": */
+        // Actualizamos stock
         await this.productsRepository.update(
           { id: element.id },
           { stock: product.stock - 1 },
@@ -82,28 +104,23 @@ export class OrdersRepository {
       }),
     );
 
-    if (productsArray.length === 0)
-      throw new BadRequestException(
-        'Ninguno de los productos está disponible en stock',
-      );
-
-    // 4. Creamos "OrderDetail" y la insertamos en BBDD:
+    // 5. Creamos OrderDetail
     const orderDetail = new OrderDetail();
-
-    /* toFixed(2) formatea la cantidad de decimales */
-    orderDetail.price = Number(Number(total).toFixed(2));
+    orderDetail.price = total;
     orderDetail.products = productsArray;
     orderDetail.order = newOrder;
 
-    await this.orderDetailRepository.save(orderDetail);
+    // 6. Guardamos OrderDetail
+    const savedOrderDetail = await this.orderDetailRepository.save(orderDetail);
 
-    // Le enviamos al cliente la compra con la info
-    // de los productos
-    return await this.ordersRepository.find({
-      where: { id: newOrder.id },
-      relations: {
-        orderDetail: true,
-      },
-    });
+    // 7. Asociamos OrderDetail con Order
+    newOrder.orderDetail = savedOrderDetail;
+
+    await this.ordersRepository.save(newOrder);
+
+    return {
+      message: 'Order created successfully',
+      data: newOrder,
+    };
   }
 }
