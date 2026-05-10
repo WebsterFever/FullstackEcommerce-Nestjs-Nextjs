@@ -17,6 +17,7 @@ import typeorm from './config/typeorm';
 import { DataSourceOptions } from 'typeorm';
 import { CategoriesModule } from './categories/categories.module';
 import { OrdersModule } from './orders/orders.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { OrdersModule } from './orders/orders.module';
     AuthModule,
     CategoriesModule,
     OrdersModule,
+    FileUploadModule,
   ],
 
   controllers: [AppController],
