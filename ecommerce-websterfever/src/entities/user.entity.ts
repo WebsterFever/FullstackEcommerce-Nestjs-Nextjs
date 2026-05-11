@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-
 import {
   Column,
   Entity,
@@ -31,8 +29,7 @@ export class User {
   email!: string;
 
   @Column({
-    type: 'varchar',
-    length: 50,
+    type: 'text',
     nullable: false,
   })
   password!: string;

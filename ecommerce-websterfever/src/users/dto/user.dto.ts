@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
   IsEmail,
   IsNotEmpty,
@@ -6,8 +7,12 @@ import {
   MinLength,
   IsNumber,
   Matches,
+  Max,
+  validate,
+  Validate,
 } from 'class-validator';
 import { PickType } from '@nestjs/mapped-types';
+import { MatchPassword } from '../../decorators/matchPassword.decorator';
 
 export class CreateUserDto {
   @IsNotEmpty({ message: 'El campo no puede ir vacío' })
@@ -22,11 +27,12 @@ export class CreateUserDto {
   @IsEmail()
   email!: string;
 
+  @MinLength(8)
+  @MaxLength(15)
+  password!: string;
+
   @IsNotEmpty()
   @IsString()
-  //@IsStrongPassword() cumple con criterios de fortaleza
-  //de validación. js (long min 8, debe incluir mayus, minus,
-  //números, símbolos especiales, evita patrones predecibles)
   @Matches(
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,15}$/,
     {
@@ -36,7 +42,10 @@ export class CreateUserDto {
   )
   @MinLength(8)
   @MaxLength(15)
-  password!: string;
+  @Validate(MatchPassword, ['password'], {
+    message: 'La contraseña y la confirmación de contraseña no coinciden',
+  })
+  confirmPassword!: string;
 
   @IsNotEmpty()
   @IsString()
