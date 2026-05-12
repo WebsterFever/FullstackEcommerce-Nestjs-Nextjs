@@ -5,16 +5,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
+import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { JwtService } from '@nestjs/jwt';
-
-interface JwtPayload {
-  id: string;
-  email: string;
-  exp: number;
-  iat: number;
-}
+import { JwtPayload } from './auth.interface';
+import { Role } from '../users/roles.enum';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -23,30 +18,35 @@ export class AuthGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const request = context.switchToHttp().getRequest<Request>();
+    const request: Request = context.switchToHttp().getRequest();
 
     // ? llega por headers el token
     const token = request.headers.authorization?.split(' ')[1];
 
     // * ['Bearer', 'xxxxx']
 
-    if (!token) {
-      throw new UnauthorizedException('Token required');
-    }
+    if (!token) throw new UnauthorizedException('Token required');
 
     try {
       // ? Validar token...
       const secret = process.env.JWT_SECRET;
 
-      const payload = this.jwtService.verify<JwtPayload>(token, {
-        secret,
-      });
+      const payload = this.jwtService.verify<
+        Omit<JwtPayload, 'exp' | 'iat'> & {
+          exp: number;
+          iat: number;
+        }
+      >(token, { secret });
 
-      payload.exp = new Date(payload.exp * 1000).getTime();
-      payload.iat = new Date(payload.iat * 1000).getTime();
+      const user: JwtPayload = {
+        ...payload,
+        roles: payload.roles ? [Role.Admin] : [Role.User],
+        exp: new Date(payload.exp * 1000),
+        iat: new Date(payload.iat * 1000),
+      };
 
       // ? Adjuntamos el payload a la request
-      // request.user = payload;
+      (request as Request & { user: JwtPayload }).user = user;
 
       return true;
     } catch (error) {

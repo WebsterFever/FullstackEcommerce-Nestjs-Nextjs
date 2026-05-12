@@ -21,7 +21,8 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "resolveJsonModule": true,
-    "types": ["multer"]
+    "types": ["multer"],
+    "typeRoots": ["./node_modules/@types", "./src/types"]
 
   }
 }

@@ -14,7 +14,7 @@ export class UsersRepository {
     const skip = (page - 1) * limit;
 
     const users = await this.usersRepository.find({
-      take: limit, // take y limit son parte de las opciones en Typeorm para paginación
+      take: limit,
       skip: skip,
     });
 

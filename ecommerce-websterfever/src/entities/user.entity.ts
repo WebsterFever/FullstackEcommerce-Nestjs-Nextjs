@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 
 import { Order } from './order.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity({ name: 'users' })
 export class User {
@@ -60,7 +61,11 @@ export class User {
   })
   city!: string;
 
-  // ✅ 1 user → many orders
+  @Column({ default: false })
+  @Exclude()
+  isAdmin!: boolean;
+
+  // 1 user → many orders
   @OneToMany(() => Order, (order) => order.user)
   @JoinColumn({ name: 'order_id' })
   orders!: Order[];

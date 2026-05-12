@@ -110,3 +110,80 @@ service
 npx nest g s categories/categories --flat --no-spec
 migracion
 npm run migration:create ./src/migrations/Migration
+
+Explícame el flujo de autenticación de usuarios en tu aplicación
+
+En mi aplicación backend implementé autenticación basada en JWT utilizando NestJS.
+
+El flujo comienza cuando el cliente envía una petición POST hacia la ruta `/auth/signin` con email y password.
+
+Primero, el controller recibe la request y la envía al AuthService. Dentro del servicio verifico que el usuario exista buscando el email en la base de datos mediante el repository.
+
+Después comparo la contraseña enviada con la contraseña hasheada almacenada en la base de datos utilizando bcrypt.compare.
+
+Si las credenciales son inválidas, lanzo excepciones HTTP como:
+
+* 400 Bad Request
+* 401 Unauthorized
+
+Si las credenciales son correctas, genero un JWT firmado utilizando JwtService.
+
+El payload contiene información básica del usuario, como:
+
+* id
+* email
+
+Luego el servidor devuelve el token al cliente.
+
+En las siguientes peticiones privadas, el cliente debe enviar el token en el header Authorization utilizando el formato:
+
+Bearer token
+
+Las rutas privadas están protegidas con un AuthGuard. El guard intercepta la request antes de llegar al controller y valida el JWT utilizando jwtService.verify.
+
+Si el token es válido, el usuario obtiene acceso a la ruta protegida. Si el token es inválido o expiró, el sistema responde con UnauthorizedException.
+
+También utilicé DTOs y class-validator para validar la entrada de datos y mantener la seguridad y consistencia de la aplicación.
+
+
+
+FLUJO COMPLETO DEL SIGNUP - POST /auth/signup
+HTTP Request
+→ Middleware
+→ Pipe + DTO Validation
+→ AuthController
+→ AuthService
+→ UsersRepository
+→ PostgreSQL
+→ Response
+
+
+orden Request HTTP
+↓
+Middleware
+↓
+Guard
+↓
+Interceptor (before)
+↓
+Pipe + DTO validation
+↓
+Controller
+↓
+Service
+↓
+Repository
+↓
+Database
+↓
+response
+↓
+Interceptor (after)
+
+La línea `user: Partial<User>` utiliza la estructura de la entity User, pero permite trabajar con objetos parciales donde todas las propiedades son opcionales.
+
+Esto proporciona más flexibilidad al momento de crear o actualizar usuarios.
+
+La línea `this.usersRepository.save(user)` utiliza TypeORM para guardar los datos del objeto user dentro de PostgreSQL.
+
+TypeORM genera automáticamente la query SQL necesaria para insertar o actualizar el registro en la base de datos.

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
   IsEmail,
   IsNotEmpty,
@@ -7,8 +6,6 @@ import {
   MinLength,
   IsNumber,
   Matches,
-  Max,
-  validate,
   Validate,
 } from 'class-validator';
 import { PickType } from '@nestjs/mapped-types';
@@ -68,6 +65,9 @@ export class CreateUserDto {
   @MinLength(5)
   @MaxLength(20)
   city!: string;
+
+  @IsNotEmpty()
+  isAdmin!: boolean;
 }
 export class LoginUserDto extends PickType(CreateUserDto, [
   'email',

@@ -8,7 +8,6 @@ import { AuthModule } from './auth/auth.module';
 
 import { LoggerGlobalMiddleware } from './middlewares/logger.middleware';
 
-// ✅ NEW IMPORTS
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import typeorm from './config/typeorm';

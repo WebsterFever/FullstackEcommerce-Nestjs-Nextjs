@@ -16,13 +16,8 @@ const config: DataSourceOptions = {
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/migrations/*{.ts,.js}'],
 
-  synchronize: true, // ⚠️ only for development
+  synchronize: true,
   logging: false,
-
-  // ❌ remove this if using TypeORM v0.3+
-  // autoLoadEntities: true,
-
-  // ⚠️ dangerous → only for testing
   dropSchema: true,
 };
 

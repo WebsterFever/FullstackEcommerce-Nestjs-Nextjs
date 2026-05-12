@@ -1,3 +1,5 @@
+import type { Request } from 'express';
+
 import {
   Body,
   Controller,
@@ -7,15 +9,21 @@ import {
   HttpStatus,
   Param,
   ParseUUIDPipe,
-  Post,
   Put,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
+
+import { plainToInstance } from 'class-transformer';
+
 import { UsersService } from './users.service';
-import { User } from './users.interface';
 import { AuthGuard } from '../auth/auth.guard';
 import { CreateUserDto } from './dto/user.dto';
+import { Role } from './roles.enum';
+import { Roles } from '../decorators/roles.decorator';
+import { UserAdminResponseDto } from './dto/user-admin.dto';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('users')
 @UseGuards(AuthGuard)
@@ -24,22 +32,26 @@ export class UsersController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
+  @Roles(Role.Admin)
+  @UseGuards(RolesGuard)
   getAllUsers(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 5,
+    @Req() req: Request,
   ) {
-    return this.usersService.getUsersService(page, limit);
+    //console.log(req.user);
+
+    const users = this.usersService.getUsersService(page, limit);
+
+    return plainToInstance(UserAdminResponseDto, users, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Get(':id')
   getUserById(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.getUserByIdService(id);
   }
-
-  // @Post()
-  // createUser(@Body() user: CreateUserDto) {
-  //   return this.usersService.createUserService(user);
-  // }
 
   @Put(':id')
   updateUser(
