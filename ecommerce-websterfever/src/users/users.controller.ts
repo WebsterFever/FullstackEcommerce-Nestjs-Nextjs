@@ -24,7 +24,9 @@ import { Role } from './roles.enum';
 import { Roles } from '../decorators/roles.decorator';
 import { UserAdminResponseDto } from './dto/user-admin.dto';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Usuarios')
 @Controller('users')
 @UseGuards(AuthGuard)
 export class UsersController {
