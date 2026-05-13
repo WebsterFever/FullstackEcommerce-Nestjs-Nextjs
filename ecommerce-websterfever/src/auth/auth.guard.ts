@@ -35,16 +35,19 @@ export class AuthGuard implements CanActivate {
         Omit<JwtPayload, 'exp' | 'iat'> & {
           exp: number;
           iat: number;
+          isAdmin: boolean;
         }
       >(token, { secret });
 
       const user: JwtPayload = {
         ...payload,
-        roles: payload.roles ? [Role.Admin] : [Role.User],
+        roles: payload.isAdmin ? [Role.Admin] : [Role.User],
         exp: new Date(payload.exp * 1000),
         iat: new Date(payload.iat * 1000),
       };
 
+      console.log(payload);
+      console.log(user);
       // ? Adjuntamos el payload a la request
       (request as Request & { user: JwtPayload }).user = user;
 

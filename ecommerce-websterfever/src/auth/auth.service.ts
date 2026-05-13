@@ -36,7 +36,7 @@ export class AuthService {
     const payload = {
       id: user.id,
       email: user.email,
-      roles: user.isAdmin,
+      isAdmin: user.isAdmin,
     };
 
     const token = this.jwtService.sign(payload);

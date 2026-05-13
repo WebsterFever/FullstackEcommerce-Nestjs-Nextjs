@@ -7,6 +7,8 @@ import {
   IsNumber,
   Matches,
   Validate,
+  IsBoolean,
+  IsOptional,
 } from 'class-validator';
 import { PickType } from '@nestjs/mapped-types';
 import { MatchPassword } from '../../decorators/matchPassword.decorator';
@@ -66,8 +68,9 @@ export class CreateUserDto {
   @MaxLength(20)
   city!: string;
 
-  @IsNotEmpty()
-  isAdmin!: boolean;
+  @IsOptional()
+  @IsBoolean()
+  isAdmin?: boolean;
 }
 export class LoginUserDto extends PickType(CreateUserDto, [
   'email',
