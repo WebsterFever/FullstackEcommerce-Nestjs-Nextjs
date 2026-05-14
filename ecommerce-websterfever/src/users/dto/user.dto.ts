@@ -12,8 +12,15 @@ import {
 } from 'class-validator';
 import { PickType } from '@nestjs/mapped-types';
 import { MatchPassword } from '../../decorators/matchPassword.decorator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
+  @ApiProperty({
+    description: 'Nombre del usuario',
+    example: 'John Doee',
+    minLength: 3,
+    maxLength: 80,
+  })
   @IsNotEmpty({ message: 'El campo no puede ir vacío' })
   @IsString()
   @MinLength(3)
@@ -22,6 +29,11 @@ export class CreateUserDto {
   })
   name!: string;
 
+  @ApiProperty({
+    description:
+      'Valid email address used for authentication and account identification.',
+    example: 'tester@mail.com',
+  })
   @IsNotEmpty({ message: 'El campo no puede ir vacío' })
   @IsEmail()
   email!: string;

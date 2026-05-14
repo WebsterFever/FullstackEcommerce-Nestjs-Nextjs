@@ -12,11 +12,26 @@ import {
 import { ProductsService } from './products.service';
 import { Product } from '../entities/product.entity';
 import { AuthGuard } from '../auth/auth.guard';
+import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
   @Get()
+  @ApiOperation({
+    summary: 'Get all products with pagination',
+    description:
+      'Returns a paginated list of products. You can specify the page number and the number of items per page using the query parameters "page" and "limit".',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'A list of products has been successfully retrieved.',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number for pagination',
+  })
   getProducts(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 5,
