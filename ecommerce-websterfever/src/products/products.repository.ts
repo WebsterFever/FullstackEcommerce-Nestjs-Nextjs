@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from '../entities/category.entity';
 import data from '../utils/data.json';
+import { CreateProductDto } from './product.dto';
 
 @Injectable()
 export class ProductsRepository {
@@ -68,6 +69,27 @@ export class ProductsRepository {
       }) ?? [],
     );
     return 'Products added successfully';
+  }
+
+  async createProduct(product: CreateProductDto): Promise<Product> {
+    const category = await this.categoriesRepository.findOneBy({
+      id: product.categoryId,
+    });
+
+    if (!category) {
+      throw new Error('Category not found');
+    }
+
+    const newProduct = this.productsRepository.create({
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      stock: product.stock,
+      imgUrl: product.imgUrl,
+      category,
+    });
+
+    return await this.productsRepository.save(newProduct);
   }
 
   async updateProduct(id: string, product: Product) {

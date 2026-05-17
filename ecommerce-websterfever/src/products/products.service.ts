@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Product } from '../entities/product.entity';
 import { ProductsRepository } from './products.repository';
+import { CreateProductDto } from './product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -14,9 +15,9 @@ export class ProductsService {
     return await this.productsRepository.getProduct(id);
   }
 
-  // createProductService(product: Product) {
-  //   return this.productsRepository.createProduct(product);
-  // }
+  createProductService(product: CreateProductDto) {
+    return this.productsRepository.createProduct(product);
+  }
 
   async addProducts(): Promise<string> {
     return await this.productsRepository.addProducts();

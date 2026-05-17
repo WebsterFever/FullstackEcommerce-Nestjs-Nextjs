@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import {
   Body,
   Controller,
@@ -13,6 +14,10 @@ import { ProductsService } from './products.service';
 import { Product } from '../entities/product.entity';
 import { AuthGuard } from '../auth/auth.guard';
 import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { Roles } from '../decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Role } from '../users/roles.enum';
+import { CreateProductDto } from './product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -48,11 +53,12 @@ export class ProductsController {
     return this.productsService.getProductByIdService(id);
   }
 
-  // @Post()
-  // @UseGuards(AuthGuard)
-  // createProduct(@Body() product) {
-  //   return this.productsService.addProducts(product);
-  // }
+  @Post()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  createProduct(@Body() product: CreateProductDto) {
+    return this.productsService.createProductService(product);
+  }
 
   @Put(':id')
   @UseGuards(AuthGuard)
