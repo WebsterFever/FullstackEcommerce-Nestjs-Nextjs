@@ -18,7 +18,7 @@ const config: DataSourceOptions = {
 
   //synchronize: true,
   logging: false,
-  // dropSchema: true,
+  //dropSchema: true,
 };
 
 export default registerAs('typeorm', () => config);
