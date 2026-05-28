@@ -8,7 +8,7 @@ export class UsersRepository {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async getUsers(page: number, limit: number): Promise<Partial<User>[]> {
     const skip = (page - 1) * limit;
@@ -40,6 +40,17 @@ export class UsersRepository {
     return await this.usersRepository.findOneBy({ email });
   }
 
+  /**
+ * Logic to create a user
+ *
+ * 1. Create an asynchronous function to create a user
+ * 2. Go to database and save the new user
+ * 3. Go back to database and search for the created user by id
+ * 4. If user was not found, throw an error
+ * 5. Remove password from user object
+ * 6. Return the safe user without password
+ */
+
   async createUser(user: Partial<User>): Promise<Partial<User>> {
     const newUser = await this.usersRepository.save(user);
 
@@ -56,32 +67,59 @@ export class UsersRepository {
     return userNoPassword;
   }
 
-  async updateUser(id: string, user: Partial<User>): Promise<Partial<User>> {
-    await this.usersRepository.update(id, user);
+/**
+ * Logic to update a user
+ *
+ * 1. Create an asynchronous function to update a user by id
+ * 2. Go to database and search for the user by id
+ * 3. If user was not found, throw an error
+ * 4. Go to database and update the user information by id
+ * 5. Go back to database and search for the updated user by id
+ * 6. If updated user was not found, throw an error
+ * 7. Remove password from user object
+ * 8. Return the updated safe user without password
+ */
 
-    const updatedUser = await this.usersRepository.findOneBy({ id });
-    //const updatedUser = await this.getUserById(id) as Promise<User>;
+async updateUser(id: string, user: Partial<User>): Promise<Partial<User>> {
 
-    if (!updatedUser)
-      throw new NotFoundException(`Usuario con id ${id} no encontrado`);
+  const existingUser = await this.usersRepository.findOneBy({ id });
 
-    const { password, ...userNoPassword } = updatedUser;
+  if (!existingUser)
+    throw new NotFoundException(`Usuario con id ${id} no encontrado`);
 
-    return userNoPassword;
-  }
+  await this.usersRepository.update(id, user);
 
-  async deleteUser(id: string): Promise<Partial<User>> {
-    const user = await this.usersRepository.findOneBy({ id });
+  const updatedUser = await this.usersRepository.findOneBy({ id });
 
-    // const user = await this.getUserById(id);
+  if (!updatedUser)
+    throw new NotFoundException(`Usuario con id ${id} no encontrado`);
 
-    if (!user)
-      throw new NotFoundException(`Usuario con id ${id} no encontrado`);
+  const { password, ...userNoPassword } = updatedUser;
 
-    await this.usersRepository.remove(user);
+  return userNoPassword;
+}
 
-    const { password, ...userNoPassword } = user;
+/**
+ * Logic to delete a user
+ *
+ * 1. Create an asynchronous function to delete a user by id
+ * 2. Go to database and search for the user by id
+ * 3. If user was not found, throw an error
+ * 4. Go to database and remove the user
+ * 5. Remove password from user object
+ * 6. Return the deleted safe user without password
+ */
 
-    return userNoPassword;
-  }
+async deleteUser(id: string): Promise<Partial<User>> {
+  const user = await this.usersRepository.findOneBy({ id });
+
+  if (!user)
+    throw new NotFoundException(`Usuario con id ${id} no encontrado`);
+
+  await this.usersRepository.remove(user);
+
+  const { password, ...userNoPassword } = user;
+
+  return userNoPassword;
+}
 }
