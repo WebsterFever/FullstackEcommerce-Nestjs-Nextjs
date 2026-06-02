@@ -5,7 +5,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function register(userData: IRegisterProps) {
   try {
-    const response = await fetch(`${API_URL}/users/register`, {
+    const response = await fetch(`${API_URL}/auth/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -63,7 +63,7 @@ export async function register(userData: IRegisterProps) {
 export async function login(userData: ILoginProps) {
   try {
     const response = await axios.post(
-      `${API_URL}/users/login`,
+      `${API_URL}/auth/signin`,
       userData,
       {
         headers: {

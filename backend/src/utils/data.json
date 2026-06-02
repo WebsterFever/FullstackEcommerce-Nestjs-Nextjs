@@ -4,6 +4,7 @@
       "description": "The best smartphone in the world",
       "price": 199.99,
       "stock": 12,
+      "imgUrl": "https://www.kiksarvr.com/assets/img/Blog-assets/blog9-img2.webp",
       "category": "smartphone"
     },
     {
@@ -11,6 +12,7 @@
       "description": "The best smartphone in the world",
       "price": 150.0,
       "stock": 12,
+      "imgUrl": "https://www.kiksarvr.com/assets/img/Blog-assets/blog9-img2.webp",
       "category": "smartphone"
     },
     {
@@ -18,6 +20,7 @@
       "description": "The best smartphone in the world",
       "price": 179.89,
       "stock": 12,
+      "imgUrl": "https://www.kiksarvr.com/assets/img/Blog-assets/blog9-img2.webp",
       "category": "smartphone"
     },
     {
@@ -25,6 +28,7 @@
       "description": "The best monitor in the world",
       "price": 299.99,
       "stock": 12,
+      "imgUrl": "https://www.kiksarvr.com/assets/img/Blog-assets/blog9-img2.webp",
       "category": "monitor"
     },
     {
@@ -32,6 +36,7 @@
       "description": "The best monitor in the world",
       "price": 199.99,
       "stock": 12,
+      "imgUrl": "https://www.kiksarvr.com/assets/img/Blog-assets/blog9-img2.webp",
       "category": "monitor"
     },
     {
@@ -39,6 +44,7 @@
       "description": "The best monitor in the world",
       "price": 150.0,
       "stock": 12,
+      "imgUrl": "https://www.kiksarvr.com/assets/img/Blog-assets/blog9-img2.webp",
       "category": "monitor"
     },
     {
@@ -46,6 +52,7 @@
       "description": "The best keyboard in the world",
       "price": 99.99,
       "stock": 12,
+      "imgUrl": "https://www.kiksarvr.com/assets/img/Blog-assets/blog9-img2.webp",
       "category": "keyboard"
     },
     {
@@ -53,6 +60,7 @@
       "description": "The best keyboard in the world",
       "price": 79.99,
       "stock": 12,
+      "imgUrl": "https://www.kiksarvr.com/assets/img/Blog-assets/blog9-img2.webp",
       "category": "keyboard"
     },
     {
@@ -60,6 +68,7 @@
       "description": "The best keyboard in the world",
       "price": 59.99,
       "stock": 12,
+      "imgUrl": "https://www.kiksarvr.com/assets/img/Blog-assets/blog9-img2.webp",
       "category": "keyboard"
     },
     {
@@ -67,6 +76,7 @@
       "description": "The best mouse in the world",
       "price": 49.99,
       "stock": 12,
+      "imgUrl": "https://www.kiksarvr.com/assets/img/Blog-assets/blog9-img2.webp",
       "category": "mouse"
     },
     {
@@ -74,6 +84,7 @@
       "description": "The best mouse in the world",
       "price": 39.99,
       "stock": 12,
+      "imgUrl": "https://www.kiksarvr.com/assets/img/Blog-assets/blog9-img2.webp",
       "category": "mouse"
     },
     {
@@ -81,6 +92,7 @@
       "description": "The best mouse in the world",
       "price": 29.99,
       "stock": 12,
+      "imgUrl": "https://www.kiksarvr.com/assets/img/Blog-assets/blog9-img2.webp",
       "category": "mouse"
     }
   ]

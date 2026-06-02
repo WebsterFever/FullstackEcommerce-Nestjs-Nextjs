@@ -187,3 +187,4 @@ Esto proporciona más flexibilidad al momento de crear o actualizar usuarios.
 La línea `this.usersRepository.save(user)` utiliza TypeORM para guardar los datos del objeto user dentro de PostgreSQL.
 
 TypeORM genera automáticamente la query SQL necesaria para insertar o actualizar el registro en la base de datos.
+docker compose up --build

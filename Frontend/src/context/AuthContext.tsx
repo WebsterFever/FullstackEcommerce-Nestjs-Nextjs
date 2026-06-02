@@ -5,7 +5,7 @@ import { useContext, createContext, useEffect, useState } from 'react';
 export interface IUserSession{
     token: string;
     user:{
-        id: number;
+        id: string;
         email: string;
         name: string;
         address: string;

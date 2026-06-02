@@ -4,7 +4,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export async function getAllProducts(): Promise<IProduct[]> {
   try {
-    const response = await fetch(` ${API_URL}/products`, {
+    const response = await fetch(`${API_URL}/products`, {
       cache: "no-store", 
     });
 
@@ -23,24 +23,21 @@ export async function getAllProducts(): Promise<IProduct[]> {
   }
 }
 
-export async function getProductByID(id: string): Promise<IProduct> {
-  try {
-    const products = await getAllProducts();
+export async function getProductByID(
+  id: string,
+): Promise<IProduct> {
+  const response = await fetch(
+    `${API_URL}/products/${id}`,
+    {
+      cache: "no-store",
+    },
+  );
 
-    const productFiltered = products.find(
-      (product) => product.id.toString() === id
+  if (!response.ok) {
+    throw new Error(
+      "El producto no fue encontrado",
     );
-
-    if (!productFiltered) {
-      throw new Error("El producto no fue encontrado");
-    }
-
-    return productFiltered;
-
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
-    throw new Error("Unknown error occurred");
   }
+
+  return response.json();
 }

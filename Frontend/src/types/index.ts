@@ -1,35 +1,38 @@
+export interface ICategory {
+  id: string;
+  name: string;
+}
+
 export interface IProduct {
-  id: number;
+  id: string;
   name: string;
   description: string;
   price: number;
   stock: number;
-  image: string;
-  categoryId: number;
+  imgUrl: string;
+  category: ICategory;
 }
 
-export interface ICategory {
-  id: number;
-  name: string;
-  
-}
-
-export interface ILoginErrors{
-    email?: string;
-    password?: string;
+export interface ILoginErrors {
+  email?: string;
+  password?: string;
 }
 
 export interface IRegisterErrors {
   name?: string;
   email?: string;
   password?: string;
+  confirmPassword?: string;
   address?: string;
   phone?: string;
+  country?: string;
+  city?: string;
+  birthdate?: string;
 }
 
 export interface IOrder {
-  id: number;
-  status: string;
+  id: string;
   date: Date;
+  userId?: string;
   products: IProduct[];
 }

@@ -2,14 +2,14 @@
 
 import { ICardProps } from "@/types/propTypes";
 
-const Card: React.FC<ICardProps> = ({ name, price, image, description, stock }) => {
+const Card: React.FC<ICardProps> = ({ name, price, imgUrl, description, stock }) => {
   return (
     <div className="flex flex-col bg-white shadow-sm border border-slate-200 rounded-lg overflow-hidden hover:shadow-lg transition w-full max-w-sm">
       
       {/* Image */}
       <div className="h-64 overflow-hidden bg-gray-100">
         <img
-          src={image}
+          src={imgUrl}
           alt={name}
           className="h-full w-full object-cover hover:scale-105 transition duration-300"
         />

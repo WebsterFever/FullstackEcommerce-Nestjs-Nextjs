@@ -8,7 +8,6 @@ import {
 } from 'typeorm';
 
 import { Category } from './category.entity';
-// ❗ ONLY import this if you really created it
 import { OrderDetail } from './orderDetails.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 

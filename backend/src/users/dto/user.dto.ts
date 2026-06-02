@@ -13,6 +13,7 @@ import {
 import { PickType } from '@nestjs/mapped-types';
 import { MatchPassword } from '../../decorators/matchPassword.decorator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -64,9 +65,10 @@ export class CreateUserDto {
   @MaxLength(80)
   address!: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  phone!: number;
+@IsNotEmpty()
+@Type(() => Number)
+@IsNumber()
+phone!: number;
 
   @IsNotEmpty()
   @IsString()

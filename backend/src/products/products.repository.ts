@@ -55,7 +55,7 @@ export class ProductsRepository {
         product.name = element.name;
         product.description = element.description;
         product.price = element.price;
-        // product.imgUrl = element.imgUrl;
+        product.imgUrl = element.imgUrl;
         product.stock = element.stock;
         product.category = category;
 

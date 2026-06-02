@@ -9,7 +9,7 @@ const ProductDetailView: React.FC<IProduct> = ({
   price,
   stock,
   description,
-  image,
+   imgUrl,
 }) => {
   const { userData } = useAuth();
 
@@ -27,7 +27,7 @@ const ProductDetailView: React.FC<IProduct> = ({
       price,
       stock,
       description,
-      image,
+       imgUrl,
     });
 
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -44,7 +44,7 @@ const ProductDetailView: React.FC<IProduct> = ({
         
         <div className="w-full h-[400px] bg-gray-100 rounded-xl overflow-hidden">
           <img
-            src={image}
+            src={imgUrl}
             alt={name}
             className="w-full h-full object-contain"
           />

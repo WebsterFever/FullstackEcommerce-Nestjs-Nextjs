@@ -29,39 +29,58 @@ export const validateRegisterForm = (
 ): IRegisterErrors => {
   const errors: IRegisterErrors = {};
 
-  // NAME
   if (!values.name?.trim()) {
     errors.name = "Name is required";
-  } else if (values.name.length < 2) {
-    errors.name = "Name must be at least 2 characters";
   }
 
-  // EMAIL
   if (!values.email?.trim()) {
     errors.email = "Email is required";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+  } else if (
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)
+  ) {
     errors.email = "Enter a valid email address";
   }
 
-  // PASSWORD
   if (!values.password?.trim()) {
     errors.password = "Password is required";
-  } else if (values.password.length < 6) {
-    errors.password = "Password must be at least 6 characters";
+  } else if (values.password.length < 8) {
+    errors.password =
+      "Password must be at least 8 characters";
   }
 
-  // ADDRESS
+  if (!values.confirmPassword?.trim()) {
+    errors.confirmPassword =
+      "Password confirmation is required";
+  } else if (
+    values.password !== values.confirmPassword
+  ) {
+    errors.confirmPassword =
+      "Passwords do not match";
+  }
+
   if (!values.address?.trim()) {
     errors.address = "Address is required";
-  } else if (values.address.length < 5) {
-    errors.address = "Address must be at least 5 characters";
   }
 
-  // PHONE
   if (!values.phone?.trim()) {
     errors.phone = "Phone is required";
-  } else if (!/^[0-9+\-\s()]{7,15}$/.test(values.phone)) {
-    errors.phone = "Enter a valid phone number";
+  }
+
+  if (!values.country?.trim()) {
+    errors.country = "Country is required";
+  }
+
+  if (!values.city?.trim()) {
+    errors.city = "City is required";
+  }
+
+  if (!values.birthdate?.trim()) {
+    errors.birthdate = "Birthdate is required";
+  } else if (
+    !/^\d{2}\/\d{2}\/\d{4}$/.test(values.birthdate)
+  ) {
+    errors.birthdate =
+      "Birthdate must be dd/mm/yyyy";
   }
 
   return errors;

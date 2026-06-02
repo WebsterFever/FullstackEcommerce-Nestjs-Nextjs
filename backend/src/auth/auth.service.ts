@@ -9,7 +9,7 @@ export class AuthService {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
   getAuthStatus(): string {
     return 'This action returns the authentication status';
   }
@@ -44,6 +44,13 @@ export class AuthService {
     return {
       message: `Bienvenido, ${user.name}! you are logged in`,
       token,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        address: user.address,
+        phone: user.phone,
+      },
     };
   }
 
